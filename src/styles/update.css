@@ -1,0 +1,26 @@
+/* ═══════════════════════════════════════════════
+   UPDATE PAGE
+   ═══════════════════════════════════════════════ */
+.update-info {
+  background: var(--bg-2);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 10px 14px;
+  flex-shrink: 0;
+}
+.update-info-title {
+  font-family: var(--mono);
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+.update-info-body {
+  font-family: var(--sans);
+  font-size: 12px;
+  color: var(--ink-2);
+  line-height: 1.4;
+}
+.update-info-body strong { color: var(--accent); font-weight: 700; }

@@ -1,0 +1,22 @@
+{
+  "name": "dispatch",
+  "version": "3.0.0",
+  "private": true,
+  "description": "Turn the WPT / MPT vehicle list into copy-paste dispatch blocks, time each WPT, and tick off completed vehicles.",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "test": "vitest run",
+    "lint": "eslint .",
+    "audit:design": "impeccable detect index.html src"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.39.1",
+    "eslint": "^9.39.1",
+    "globals": "^16.5.0",
+    "vite": "^7.2.4",
+    "vitest": "^5.0.5"
+  }
+}
