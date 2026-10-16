@@ -1,0 +1,25 @@
+{
+  "name": "Dispatch Formatter",
+  "short_name": "Dispatch",
+  "description": "Format WPT/MPT vehicle dispatches for copy-paste",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#fdf8ef",
+  "theme_color": "#4338ca",
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
