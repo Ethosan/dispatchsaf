@@ -7,6 +7,8 @@ A phone-first web app for vehicle dispatch duty. Paste the WPT / MPT vehicle lis
 3. **Tracks the run:** a 20-minute timer per WPT, a done tick per vehicle and an optional note (*cannot hold charge*).
 4. **Updates the list:** paste the latest list and every vehicle you finished gets `✅` (plus its note) in place of its tag. Everything else stays exactly as it was.
 
+> **History:** First built in August 2025 and deployed on Netlify. Moved to GitHub in October 2026, so the commit history starts there.
+
 It works offline once opened, installs to the home screen, and keeps everything on the device (localStorage). Nothing is sent anywhere.
 
 ## How the slots are worked out
