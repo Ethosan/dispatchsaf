@@ -1,0 +1,388 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover">
+<title>Dispatch</title>
+<meta name="description" content="Turn the WPT / MPT vehicle list into copy-paste dispatch blocks, time each WPT, and tick off completed vehicles.">
+<meta name="theme-color" content="#f3f4f6">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Dispatch">
+<link rel="manifest" href="/manifest.json">
+<link rel="icon" type="image/png" href="/icon-192.png">
+<link rel="apple-touch-icon" href="/icon-192.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@700;800&family=JetBrains+Mono:wght@400;500;600;700&family=Public+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script>
+  /* Set the theme before first paint so there is no flash. */
+  try {
+    var t = localStorage.getItem("dispatch.theme.v1") || "auto";
+    if (t === "auto") t = matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+    document.documentElement.setAttribute("data-theme", t);
+  } catch (e) {}
+</script>
+  <script type="module" crossorigin src="/assets/index-9PBZTRbn.js"></script>
+  <link rel="stylesheet" crossorigin href="/assets/index-BfM1EEI7.css">
+</head>
+<body>
+<div class="update-banner" id="updateBanner" role="status">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+    <polyline points="23 4 23 10 17 10"/>
+    <path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/>
+  </svg>
+  <div class="update-banner-text">New version available</div>
+  <button class="update-banner-btn" id="updateBannerBtn">Update</button>
+</div>
+
+<header class="app-header">
+  <div class="brand">
+    <span class="brand-dot" aria-hidden="true"></span>
+    <h1 class="brand-title">dispatch</h1>
+  </div>
+  <div class="header-right">
+    <div class="header-date" aria-hidden="true">
+      <div class="d" id="headerDate">——————</div>
+      <div class="t" id="headerTime">——:——</div>
+    </div>
+    <button class="icon-btn" id="settingsBtn" aria-label="Settings">
+      <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="12" cy="12" r="3"/>
+        <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+      </svg>
+    </button>
+  </div>
+</header>
+
+<main>
+  <!-- ════════ DEPLOY PAGE ════════ -->
+  <div class="page active" id="page-deploy">
+    <button type="button" class="active-user" id="activeUserCard" aria-label="Active user. Tap to switch">
+      <div class="au-left">
+        <span class="au-label">Active User · Tap to switch</span>
+        <span class="au-name empty" id="auName">Not set</span>
+      </div>
+      <svg aria-hidden="true" class="au-chevron" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <polyline points="9 18 15 12 9 6"/>
+      </svg>
+    </button>
+
+    <div class="input-wrap">
+      <label for="rawInput" class="sr-only">Vehicle list</label>
+      <textarea id="rawInput" class="raw-input" placeholder="Paste the WPT / MPT vehicle list here..." spellcheck="false"></textarea>
+      <button class="raw-clear" id="clearRawBtn" aria-label="Clear list">×</button>
+    </div>
+
+    <div class="gen-row">
+      <div class="date-picker">
+        <div class="time-override-label date-label">
+          <span>Date</span>
+          <span class="date-picker-shown" id="datePickerShown">—</span>
+        </div>
+        <div class="date-seg" id="dateSeg" role="group" aria-label="Dispatch date">
+          <button data-day="0" class="active" aria-pressed="true">Today</button>
+          <button data-day="1" aria-pressed="false">Tomorrow</button>
+        </div>
+      </div>
+      <div class="time-override">
+        <div class="time-override-label">
+          <label for="timeOverride" id="timeLabel">Start (default)</label>
+          <button class="time-reset" id="timeReset" aria-label="Reset start time">reset</button>
+        </div>
+        <input type="text" id="timeOverride" placeholder="0840" inputmode="numeric" maxlength="5" autocomplete="off">
+      </div>
+      <button class="btn-primary" id="generateBtn">
+        <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M5 12h14M12 5l7 7-7 7"/>
+        </svg>
+        Go
+      </button>
+    </div>
+
+    <div class="messages" id="messages" aria-live="polite"></div>
+
+    <div class="output-wrap">
+      <div class="output-bar">
+        <div class="status">
+          <span class="status-dot" id="statusDot"></span>
+          <span id="statusText">awaiting input</span>
+        </div>
+        <span class="status-meta" id="statusMeta">—</span>
+      </div>
+      <div class="output-body empty" id="output" aria-live="polite">Output appears here</div>
+      <div class="output-footer">
+        <button class="btn-copy" id="copyBtn" disabled>
+          <svg aria-hidden="true" class="icon-copy" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="9" y="9" width="13" height="13" rx="2"/>
+            <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>
+          </svg>
+          <svg aria-hidden="true" class="icon-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="20 6 9 17 4 12"/>
+          </svg>
+          <span class="label-copy">Copy all</span>
+          <span class="label-done">Copied</span>
+        </button>
+        <button class="btn-clear" id="clearOutBtn">Clear</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ════════ TRACKER PAGE ════════ -->
+  <div class="page" id="page-tracker">
+    <div class="tracker-summary">
+      <div class="summary-card">
+        <div class="lbl">WPT</div>
+        <div class="val"><span id="trackerWptDone">0</span><span class="of">/<span id="trackerWptTotal">0</span></span></div>
+      </div>
+      <div class="summary-card">
+        <div class="lbl">MPT</div>
+        <div class="val"><span id="trackerMptDone">0</span><span class="of">/<span id="trackerMptTotal">0</span></span></div>
+      </div>
+      <div class="summary-card">
+        <div class="lbl">Running</div>
+        <div class="val" id="trackerRunningCount">0</div>
+      </div>
+    </div>
+
+    <div class="tracker-list" id="trackerList"></div>
+
+    <div class="tracker-actions">
+      <button class="btn-clear" id="clearTrackerBtn">Clear All</button>
+      <button class="btn-primary wide" id="goToUpdateBtn">
+        <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M5 12h14M12 5l7 7-7 7"/>
+        </svg>
+        Continue to Update
+      </button>
+    </div>
+  </div>
+
+  <!-- ════════ UPDATE PAGE ════════ -->
+  <div class="page" id="page-update">
+    <div class="update-info">
+      <h2 class="update-info-title">How this works</h2>
+      <div class="update-info-body">
+        Paste the latest WPT/MPT list. Your completed vehicles will have their tags replaced with status notes. <strong id="updateCount">0 vehicles ready</strong>
+      </div>
+    </div>
+
+    <div class="input-wrap">
+      <label for="updateInput" class="sr-only">Latest vehicle list</label>
+      <textarea id="updateInput" class="raw-input" placeholder="Paste the latest WPT/MPT list here..." spellcheck="false"></textarea>
+      <button class="raw-clear" id="clearUpdateBtn" aria-label="Clear list">×</button>
+    </div>
+
+    <div class="gen-row">
+      <button class="btn-primary" id="applyBtn">
+        <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M5 12h14M12 5l7 7-7 7"/>
+        </svg>
+        Apply Statuses
+      </button>
+    </div>
+
+    <div class="messages" id="updateMessages" aria-live="polite"></div>
+
+    <div class="output-wrap">
+      <div class="output-bar">
+        <div class="status">
+          <span class="status-dot" id="updateStatusDot"></span>
+          <span id="updateStatusText">awaiting input</span>
+        </div>
+        <span class="status-meta" id="updateStatusMeta">—</span>
+      </div>
+      <div class="output-body empty" id="updateOutput">Updated list appears here</div>
+      <div class="output-footer">
+        <button class="btn-copy" id="updateCopyBtn" disabled>
+          <svg aria-hidden="true" class="icon-copy" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="9" y="9" width="13" height="13" rx="2"/>
+            <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>
+          </svg>
+          <svg aria-hidden="true" class="icon-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="20 6 9 17 4 12"/>
+          </svg>
+          <span class="label-copy">Copy & Clear Tracker</span>
+          <span class="label-done">Copied</span>
+        </button>
+      </div>
+    </div>
+  </div>
+</main>
+
+<!-- ════════ BOTTOM TAB BAR ════════ -->
+<nav class="tab-bar" id="tabBar" aria-label="Pages">
+  <button class="tab-item active" data-page="deploy" aria-current="page">
+    <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/>
+    </svg>
+    <span class="tab-label">Deploy</span>
+  </button>
+  <button class="tab-item" data-page="tracker" id="trackerTab">
+    <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <circle cx="12" cy="12" r="10"/>
+      <polyline points="12 6 12 12 16 14"/>
+    </svg>
+    <span class="tab-label">Tracker</span>
+    <span class="tab-badge" id="trackerBadge" hidden>0</span>
+  </button>
+  <button class="tab-item" data-page="update">
+    <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M21 12a9 9 0 1 1-9-9c2.5 0 4.8 1 6.5 2.6"/>
+      <polyline points="21 4 21 10 15 10"/>
+    </svg>
+    <span class="tab-label">Update</span>
+  </button>
+</nav>
+
+<!-- ════════ SETTINGS MODAL ════════ -->
+<div class="modal-overlay" id="modal" aria-hidden="true">
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+    <div class="modal-header">
+      <h2 class="modal-title" id="modalTitle">Settings</h2>
+      <button class="modal-close" id="closeModal" aria-label="Close settings">×</button>
+    </div>
+    <div class="modal-body">
+      <div class="modal-tabs" role="tablist" aria-label="Settings sections">
+        <div class="tab-indicator" id="tabIndicator"></div>
+        <button class="tab active" role="tab" aria-selected="true" data-tab="users">Users</button>
+        <button class="tab" role="tab" aria-selected="false" data-tab="blocklist">Status codes</button>
+        <button class="tab" role="tab" aria-selected="false" data-tab="prefs">Prefs</button>
+      </div>
+
+      <div class="tab-panel active" id="tab-users">
+        <div class="field-grid">
+          <div>
+            <label class="field-label" for="userName">Name</label>
+            <input type="text" id="userName" placeholder="e.g. Ethan" autocomplete="off">
+          </div>
+          <div>
+            <label class="field-label" for="userRank">Rank</label>
+            <select id="userRank">
+              <option value="PTE">PTE</option>
+              <option value="LCP">LCP</option>
+              <option value="CPL">CPL</option>
+              <option value="CFC">CFC</option>
+              <option value="3SGT">3SGT</option>
+              <option value="2SGT">2SGT</option>
+              <option value="1SGT">1SGT</option>
+            </select>
+          </div>
+        </div>
+        <div class="field-spaced">
+          <label class="field-label" for="userAliases">Aliases (optional)</label>
+          <input type="text" id="userAliases" placeholder="e.g. EthanT, ET, Tam" autocomplete="off">
+          <p class="hint hint-tight">
+            Comma-separated. Any of these in the list also matches you. Aliases override status codes. Output always uses your official name.
+          </p>
+        </div>
+        <div class="modal-btn-row">
+          <button class="m-btn primary grow" id="saveUserBtn">Save & Set Active</button>
+          <button class="m-btn" id="clearUserFormBtn">Clear</button>
+        </div>
+        <div class="saved-header">
+          <span>Saved Users</span>
+          <span class="saved-count" id="userCount">0</span>
+        </div>
+        <div id="savedList"></div>
+      </div>
+
+      <div class="tab-panel" id="tab-blocklist">
+        <p class="hint">
+          Words after a MID that match one of these (any case) are read as vehicle status codes, not names. <span class="saved-count"><span id="blocklistCount">0</span> codes</span>
+        </p>
+        <div class="blocklist" id="blocklist"></div>
+        <div class="add-row">
+          <input type="text" id="addStatus" placeholder="New status code" aria-label="New status code" autocomplete="off">
+          <button class="m-btn primary" id="addStatusBtn">Add</button>
+        </div>
+        <div class="field-spaced">
+          <button class="m-btn danger" id="resetBlocklistBtn">Reset to Defaults</button>
+        </div>
+      </div>
+
+      <div class="tab-panel" id="tab-prefs">
+        <div class="install-banner" id="installBanner">
+          <div class="install-banner-text">Install as app for offline use</div>
+          <button id="installBtn">Install</button>
+        </div>
+
+        <div class="pref-row">
+          <div class="pref-left">
+            <div class="pref-label">Theme</div>
+            <div class="pref-sub">Light / dark / system</div>
+          </div>
+          <div class="theme-seg" id="themeSeg" role="group" aria-label="Theme">
+            <button data-theme="light">Light</button>
+            <button data-theme="dark">Dark</button>
+            <button data-theme="auto">Auto</button>
+          </div>
+        </div>
+
+        <div class="pref-row">
+          <div class="pref-left">
+            <div class="pref-label">Auto-generate on paste</div>
+            <div class="pref-sub">Run instantly after pasting</div>
+          </div>
+          <div class="theme-seg">
+            <button class="pref-toggle" data-pref="autoGen" data-value="on">On</button>
+            <button class="pref-toggle" data-pref="autoGen" data-value="off">Off</button>
+          </div>
+        </div>
+
+        <div class="pref-row">
+          <div class="pref-left">
+            <div class="pref-label">Show Tracker tab</div>
+            <div class="pref-sub">Optional WPT timer + status</div>
+          </div>
+          <div class="theme-seg">
+            <button class="pref-toggle" data-pref="tracker" data-value="on">On</button>
+            <button class="pref-toggle" data-pref="tracker" data-value="off">Off</button>
+          </div>
+        </div>
+
+        <div class="pref-row">
+          <div class="pref-left">
+            <div class="pref-label">Backup</div>
+            <div class="pref-sub">Users, status codes and saved notes</div>
+          </div>
+          <div class="theme-seg">
+            <button id="exportBtn">Export</button>
+            <button id="importBtn">Import</button>
+          </div>
+          <input type="file" id="importFile" accept="application/json,.json" hidden>
+        </div>
+
+        <div class="pref-row">
+          <div class="pref-left">
+            <div class="pref-label">About</div>
+            <div class="pref-sub">Dispatch <span id="appVersion"></span> · works offline</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ════════ TOAST ════════ -->
+<div class="toast" id="toast" role="status" aria-live="polite">
+  <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+    <polyline points="20 6 9 17 4 12"/>
+  </svg>
+  <span id="toastMsg">Copied</span>
+</div>
+
+<!-- ════════ CONFIRM DIALOG ════════ -->
+<div class="confirm-overlay" id="confirmOverlay">
+  <div class="confirm-box" role="alertdialog" aria-modal="true" aria-labelledby="confirmTitle" aria-describedby="confirmMsg">
+    <h2 class="confirm-title" id="confirmTitle">Confirm</h2>
+    <div class="confirm-msg" id="confirmMsg">Are you sure?</div>
+    <div class="confirm-actions">
+      <button class="m-btn" id="confirmCancel">Cancel</button>
+      <button class="m-btn primary" id="confirmOk">Confirm</button>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>
