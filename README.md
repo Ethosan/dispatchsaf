@@ -4,8 +4,8 @@ Turn the WPT / MPT vehicle list into copy-paste dispatch blocks, time each WPT, 
 
 | | |
 | --- | --- |
-| **Live** | https://dispatchsaf.netlify.app |
-| **Hosting** | Netlify |
+| **Live** | https://dispatchsaf.pages.dev |
+| **Hosting** | Cloudflare Pages |
 | **Data** | Stays in the browser (`localStorage`). No server, no account. |
 | **Stack** | Vite · TypeScript · Vanilla JS · CSS custom properties |
 | **Repository** | [gitlab.com/eatentam/dispatchsaf](https://gitlab.com/eatentam/dispatchsaf) |
@@ -83,7 +83,7 @@ dispatchsaf/
 │   ├── format.test.ts      # Dispatch generation tests
 │   ├── tracker.test.ts     # Tracker logic tests
 │   └── update.test.ts      # Status application tests
-├── netlify.toml            # Netlify build config + security headers
+├── public/_headers         # Cloudflare Pages security headers + cache rules
 ├── vite.config.ts          # Vite config (build, dev server, test)
 ├── tsconfig.json           # TypeScript config (strict mode)
 ├── eslint.config.js        # ESLint config
@@ -136,7 +136,7 @@ All state lives in `localStorage` under the `dispatch.*` key prefix. The state m
 
 ## Deploy
 
-Pushes to `main` automatically deploy via Netlify. The build command is `npm run build` and the publish directory is `dist/`.
+Pushes to `main` automatically deploy via Cloudflare Pages. The build command is `npm run build` and the output directory is `dist/`.
 
 The service worker cache version (`dispatch-v12` in `public/sw.js`) should be bumped on each deploy so installed apps pick up the update.
 
