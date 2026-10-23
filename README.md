@@ -4,7 +4,7 @@ Turn the WPT / MPT vehicle list into copy-paste dispatch blocks, time each WPT, 
 
 | | |
 | --- | --- |
-| **Live** | https://dispatchsaf.pages.dev |
+| **Live** | https://dispatchsaf.ethantam.dev |
 | **Hosting** | Cloudflare Pages |
 | **Data** | Stays in the browser (`localStorage`). No server, no account. |
 | **Stack** | Vite · TypeScript · Vanilla JS · CSS custom properties |
