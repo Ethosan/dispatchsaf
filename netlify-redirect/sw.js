@@ -1,5 +1,5 @@
 // Migration service worker: redirect all navigations to the new host.
-const NEW_URL = "https://dispatchsaf.pages.dev";
+const NEW_URL = "https://dispatchsaf.ethantam.dev";
 
 self.addEventListener("install", e => { self.skipWaiting(); });
 
