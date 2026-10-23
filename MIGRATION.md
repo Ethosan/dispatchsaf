@@ -1,5 +1,7 @@
 # Cloudflare Pages Migration — dispatchsaf
 
+> **Account**: Log into Cloudflare Dashboard as **ethantam0206@gmail.com** (not eatentam@gmail.com).
+
 ## What changed
 
 - `public/_headers` already exists and matches the Netlify headers. No code changes needed.
