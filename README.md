@@ -1,16 +1,33 @@
+<img src="public/icon-512.png" width="88" alt="Dispatch logo: a white italic d with a small dot on indigo">
+
 # Dispatch
 
-Turn the WPT / MPT vehicle list into copy-paste dispatch blocks, time each WPT, and tick off completed vehicles. Installable as a PWA — works fully offline after the first visit.
+Turn the WPT / MPT vehicle list into copy-paste dispatch blocks, time each WPT, and tick off completed vehicles. Paste the list once: Dispatch picks out your vehicles, assigns the time slots, keeps a countdown for each one, and writes the updated list back with the finished ones marked. Installable as a PWA, and works fully offline after the first visit.
+
+![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?logo=typescript&logoColor=white)
+![Vite](https://img.shields.io/badge/Vite-646CFF?logo=vite&logoColor=white)
+![Vitest](https://img.shields.io/badge/Vitest-6E9F18?logo=vitest&logoColor=white)
+![Cloudflare Pages](https://img.shields.io/badge/Cloudflare_Pages-F38020?logo=cloudflarepages&logoColor=white)
+![PWA](https://img.shields.io/badge/PWA-5A0FC8?logo=pwa&logoColor=white)
+
+<p align="center">
+  <img src="docs/screenshots/deploy.png" width="32%" alt="Deploy: a pasted vehicle list turned into dispatch blocks with date, time slot, MID, rank and name, location and purpose">
+  <img src="docs/screenshots/tracker.png" width="32%" alt="Tracker: one WPT countdown running, and two vehicles marked done, one with a note">
+  <img src="docs/screenshots/update.png" width="32%" alt="Update: the fresh list with the two finished vehicles ticked and their notes added">
+</p>
+<p align="center"><sub>Deploy, Tracker and Update. Shown with a made-up vehicle list.</sub></p>
+
+## At a glance
 
 | | |
 | --- | --- |
 | **Live** | https://dispatchsaf.ethantam.dev |
-| **Hosting** | Cloudflare Pages |
+| **Hosting** | Cloudflare Pages, connected to this repository; every push to `main` deploys (`npm run build`, output `dist/`) |
 | **Data** | Stays in the browser (`localStorage`). No server, no account. |
-| **Stack** | Vite · TypeScript · Vanilla JS · CSS custom properties |
-| **Repository** | [gitlab.com/eatentam/dispatchsaf](https://gitlab.com/eatentam/dispatchsaf) |
+| **Run locally** | `npm install && npm run dev`, then open http://localhost:5173 |
+| **Source** | [gitlab.com/eatentam/dispatchsaf](https://gitlab.com/eatentam/dispatchsaf) |
 
----
+Settings: none. There are no secrets or environment variables; the only network call is the optional feedback button.
 
 ## Features
 
@@ -20,7 +37,7 @@ Turn the WPT / MPT vehicle list into copy-paste dispatch blocks, time each WPT, 
 - **Settings** — Manage users (name, rank, aliases), status code blocklist (words after a MID that aren't names), theme (light/dark/auto), auto-generate on paste, tracker visibility, and JSON backup/restore.
 - **PWA** — Installable on mobile and desktop. Service worker caches everything for offline use. Update banner appears when a new version is deployed.
 
-## Quick start
+## Getting started
 
 ```sh
 # Install dependencies
