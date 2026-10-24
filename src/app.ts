@@ -1,3 +1,4 @@
+declare const __APP_VERSION__: string;
 // ─── Dispatch — Main entry point ────────────────────────────────────────────
 
 import './styles/main.css';
@@ -161,6 +162,7 @@ function boot(): void {
   // Service worker
   if ('serviceWorker' in navigator) {
     addEventListener('load', () => {
+    const bv = document.getElementById('brandVersion'); if (bv) bv.textContent = 'v' + __APP_VERSION__;
       navigator.serviceWorker
         .register('/sw.js')
         .then(watchServiceWorker)
