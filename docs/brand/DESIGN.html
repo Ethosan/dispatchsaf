@@ -1,0 +1,167 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><title>Dispatch · Design guide</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@700;800&family=JetBrains+Mono:wght@400;500;600;700&family=Public+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--ink:#1a1d29;--body:#2d3142;--muted:#565c6b;--hair:#dfe2e8;--canvas:#f3f4f6;--card:#ffffff;--accent:#4338ca;--down:#dc2626;--code-bg:#e9ebf0;--code-ink:#2d3142;--pre-bg:#1a1d29;--pre-ink:#e8eaed;--pre-hair:transparent;--head-bg:rgba(243,244,246,.88);--sans:"Public Sans",-apple-system,"Segoe UI",sans-serif;--mono:"JetBrains Mono",ui-monospace,monospace;--disp:"Big Shoulders Display","Public Sans",sans-serif;--r:12px;color-scheme:light}
+*{box-sizing:border-box}html{scroll-behavior:smooth}
+body{margin:0;background:var(--canvas);color:var(--ink);font:15px/1.55 var(--sans);-webkit-font-smoothing:antialiased}
+code,.mono{font-family:var(--mono);font-size:.86em}
+code{background:var(--code-bg);border:1px solid var(--hair);border-radius:5px;padding:1px 5px;color:var(--code-ink)}
+pre{background:var(--pre-bg);color:var(--pre-ink);border:1px solid var(--pre-hair);border-radius:var(--r);padding:18px 20px;overflow:auto;font-size:12.5px;line-height:1.5}pre code{background:none;border:0;padding:0;color:inherit;font-size:inherit}
+.wrap{max-width:1120px;margin:0 auto;padding:0 28px 120px}
+header{position:sticky;top:0;z-index:5;background:var(--head-bg);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);border-bottom:1px solid var(--hair)}
+header .wrap{display:flex;align-items:center;gap:14px;padding:12px 28px}
+header nav{margin-left:auto;display:flex;gap:18px;font-size:13px;font-weight:500;color:var(--muted)}header nav a{color:inherit;text-decoration:none}header nav a:hover{color:var(--accent)}
+.brandbox{flex:none;display:grid;place-items:center}.brandbox>*{display:block}
+.wm{line-height:1.2}.wm small{display:block;margin-top:3px;font:400 10px/1.2 var(--sans);letter-spacing:0;text-transform:none;color:var(--muted)}
+h1{font-family:var(--disp);font-size:44px;line-height:1.05;letter-spacing:-.04em;margin:64px 0 12px;font-weight:700}
+.lede{font-size:19px;color:var(--body);max-width:760px;margin:0 0 8px}
+h2{font-family:var(--disp);font-size:26px;letter-spacing:-.03em;margin:72px 0 6px;font-weight:700;scroll-margin-top:80px}
+h2+p{margin-top:0;color:var(--body);max-width:760px}
+h3{font-size:15px;margin:0 0 8px;font-weight:600}
+.label{font-size:10px;font-weight:600;letter-spacing:.5px;text-transform:uppercase;color:var(--muted);margin:40px 0 8px}
+.card{background:var(--card);border:1px solid var(--hair);border-radius:var(--r);padding:22px}
+.card p{margin:0}.card p+p{margin-top:8px}
+.grid{display:grid;gap:16px}.g2{grid-template-columns:repeat(2,1fr)}.g3{grid-template-columns:repeat(3,1fr)}
+.muted{color:var(--muted)}.small{font-size:13px}
+.sw{display:flex;gap:12px;align-items:flex-start;font-size:13px;line-height:1.4}.chip{width:56px;height:56px;border-radius:10px;flex:none;border:1px solid var(--hair)}
+.sw-sm .chip{width:36px;height:36px;border-radius:8px}
+.icons{display:flex;gap:28px;align-items:flex-end;flex-wrap:wrap}.icons figure{margin:0;text-align:center;font-size:12px;color:var(--muted)}.icons figure>:first-child{display:block;margin:0 auto 8px}
+.dont{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}.dont .card{padding:14px;text-align:center;font-size:13px}.dont .fig{height:76px;display:grid;place-items:center;margin:2px 0 10px}.dont b{color:var(--down)}
+.rule{display:grid;grid-template-columns:170px 1fr;gap:14px;padding:12px 0;border-bottom:1px solid var(--hair);font-size:14px}.rule:last-child{border-bottom:0}.rule b{font-weight:600}
+.tt{display:flex;flex-direction:column;gap:16px}.tt .row{display:grid;grid-template-columns:210px 1fr;gap:16px;align-items:baseline}.tt .row>.mono{color:var(--muted);font-size:11px}
+table.files{width:100%;border-collapse:collapse;font-size:13.5px}table.files td{padding:10px 14px 10px 0;border-bottom:1px solid var(--hair);vertical-align:top}table.files tr:last-child td{border-bottom:0}table.files td:first-child{width:36%}
+ul.loose{margin:0;padding-left:18px}ul.loose li{margin:6px 0;font-size:14px}
+footer{margin-top:80px;font-size:12px;color:var(--muted)}
+@media(max-width:800px){.g2,.g3{grid-template-columns:1fr}.dont{grid-template-columns:1fr 1fr}header nav{display:none}.rule,.tt .row{grid-template-columns:1fr}}
+body{font-size:14px;line-height:1.45;background-image:radial-gradient(circle at 10% 0%,color-mix(in srgb,#4338ca 10%,transparent) 0%,transparent 50%),radial-gradient(circle at 100% 100%,color-mix(in srgb,#d97706 8%,transparent) 0%,transparent 50%);background-attachment:fixed}
+h1,h2{text-transform:uppercase;letter-spacing:.01em;font-weight:800}h1{font-size:60px;line-height:.95}h2{font-size:32px}h3{font-family:var(--disp);font-size:18px;font-weight:700}
+.lede{font-size:17px}
+.label{font-family:var(--mono);font-size:12px;letter-spacing:.08em;color:#676d7c}
+.dbrand{display:inline-flex;align-items:baseline;gap:8px}.dbrand .dot{width:6px;height:6px;border-radius:50%;background:#4338ca;margin-right:2px;align-self:center}
+.dbrand .t{font-family:var(--disp);font-weight:700;font-size:22px;letter-spacing:.01em;text-transform:uppercase;color:#1a1d29}.dbrand .v{font-size:14px;color:#1a1d29}
+.dbrand.dk .dot{background:#a5b4fc}.dbrand.dk .t,.dbrand.dk .v{color:#e8eaed}
+.wm .dbrand .t{font-size:20px}
+.st{display:flex;justify-content:space-between;align-items:center;padding:9px 12px;background:#e9ebf0;border:1px solid #dfe2e8;border-radius:10px;margin-top:8px}
+.st .s{display:flex;align-items:center;gap:7px;font-family:var(--mono);font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:#565c6b;font-weight:600}.st i{width:7px;height:7px;border-radius:50%;background:#676d7c}
+.st .m{font-family:var(--mono);font-size:12px;color:#676d7c}
+.tabs{display:flex;border-top:1px solid #dfe2e8;margin-top:12px}.tabs span{flex:1;position:relative;text-align:center;padding:24px 4px 8px;font-size:12px;font-weight:600;letter-spacing:.02em;color:#676d7c}.tabs .on{color:#4338ca}
+.tabs b{position:absolute;top:6px;left:calc(50% + 2px);color:#f3f4f6;font:700 12px/1.2 var(--mono);border-radius:999px;padding:1px 5px;min-width:16px}
+.au{background:#fff;border:1px solid #dfe2e8;border-radius:12px;padding:10px 14px;display:flex;justify-content:space-between;align-items:center;margin-top:8px}
+.au .l{font-family:var(--mono);font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:#676d7c;font-weight:600}.au .n{font-family:var(--disp);font-weight:700;font-size:18px;line-height:1.1;margin-top:2px}
+</style>  <meta name="app-version" content="3.1.2">
+</head><body>
+<header><div class="wrap"><div class="brandbox"><img src="../../public/icon-192.png" width="32" height="32" alt="" style="border-radius:7px;border-radius:8px"></div><div class="wm"><span class="dbrand"><span class="dot"></span><span class="t">dispatch</span></span><small>Design guide · v1</small></div>
+<nav><a href="#mark">Mark</a><a href="#colour">Colour</a><a href="#type">Type</a><a href="#motifs">Motifs</a><a href="#voice">Voice</a><a href="#assets">Assets</a><a href="#code">Code</a></nav></div></header>
+<div class="wrap">
+<h1>Paste the list once.</h1>
+<p class="lede">Dispatch already has a look: a cool grey ground with two faint washes, white cards with 12px corners, one indigo, condensed capitals for the wordmark and names, JetBrains Mono for the dispatch blocks and status lines, and green, amber and red only for status. This guide names it so the app and the GitLab repo stay the same product. It invents nothing.</p>
+<p class="lede small muted">Every colour below is a token in <code>src/styles/tokens.css</code> at v3.1.1. The app has light, dark and auto themes; both palettes are listed. The headline is the README's own line: <i>Paste the list once: Dispatch picks out your vehicles, assigns the time slots, keeps a countdown for each one.</i></p>
+
+<h2 id="mark">The mark</h2>
+<p>The icon is a cream italic serif d with a small periwinkle dot to its upper left, on full-bleed indigo. In the app there is no image: the header sets a 6px indigo dot before the word. The dot is what the two share.</p>
+<div class="card"><div class="icons"><figure><img src="../../public/icon-512.png" width="128" height="128" alt="" style="border-radius:28px;"><figcaption>icon-512</figcaption></figure><figure><img src="../../public/icon-512.png" width="64" height="64" alt="" style="border-radius:14px;"><figcaption>64</figcaption></figure><figure><span style="display:flex;gap:10px;align-items:flex-end"><img src="../../public/icon-192.png" width="32" height="32" alt="" style="border-radius:7px;border-radius:7px"><img src="../../public/icon-192.png" width="16" height="16" alt="" style="border-radius:4px;border-radius:4px"></span><figcaption>icon-192 as favicon · 32 · 16</figcaption></figure><figure><span style="display:block;padding:10px 0"><span class="dbrand"><span class="dot"></span><span class="t">dispatch</span><span class="v">v3.1.1</span></span></span><figcaption>the header, as built</figcaption></figure></div></div>
+<div class="grid g2" style="margin-top:16px"><div class="card"><h3>What it is</h3><p class="small">Three colours, sampled from the PNG: indigo ground <code>#4338CA</code> (the light theme's <code>--accent</code>), a cream letter <code>#FDF8EF</code>, and a periwinkle dot <code>#A5B4FC</code> (the dark theme's <code>--accent</code>). So the icon carries both themes' accent. The cream is not a token.</p></div><div class="card"><h3>Where it sits</h3><p class="small"><code>icon-192.png</code> is the favicon and the apple-touch-icon. The manifest lists 192 and 512 as <i>any</i>, and the same <code>icon-512.png</code> again as <i>maskable</i>. The README opens with <code>icon-512</code> at 88px. The header uses the dot and the word, never the icon.</p></div></div>
+<div class="label">Wordmark</div>
+<div class="grid g2"><div class="card" style="display:grid;place-items:center;min-height:150px;background:#f3f4f6"><span class="dbrand"><span class="dot"></span><span class="t">dispatch</span><span class="v">v3.1.1</span></span></div><div class="card" style="display:grid;place-items:center;min-height:150px;background:#0f1117;border-color:#272b38"><span class="dbrand dk"><span class="dot"></span><span class="t">dispatch</span><span class="v">v3.1.1</span></span></div></div>
+<p class="small muted">The markup says <i>dispatch</i>; CSS sets it in Big Shoulders Display 700 at 22px, uppercase, tracking +1%, after a 6px accent dot, with the version beside it (v3.1.1 here). Light theme left, dark right: the dot follows <code>--accent</code>, indigo or periwinkle. The name is Dispatch in the page title, README and on the home screen; the manifest's long name is Dispatch Formatter; the repo and address say dispatchsaf.</p>
+<div class="label">Don't</div>
+<div class="dont"><div class="card"><div class="fig"><span style="font:700 22px 'Public Sans',sans-serif">dispatch</span></div><b>Don't</b> set the word in Public Sans or lowercase. It is condensed capitals.</div><div class="card"><div class="fig"><span class="dbrand"><span class="t">dispatch</span></span></div><b>Don't</b> drop the dot. It is the one thing the header and the icon share.</div><div class="card"><div class="fig"><span class="dbrand"><span class="dot" style="background:#059669"></span><span class="t">dispatch</span></span></div><b>Don't</b> colour the dot green, amber or red. Those mean status: done, pending, error.</div><div class="card"><div class="fig"><img src="../../public/icon-192.png" width="64" height="64" alt="" style="border-radius:14px;filter:hue-rotate(160deg)"></div><b>Don't</b> recolour the icon. Its two colours are the app's two accents.</div></div>
+
+<h2 id="colour">Colour</h2>
+<p>Grey and white do the work, with a faint indigo wash at the top left of the page and a fainter amber one at the bottom right. Indigo is the accent: the primary button, the active tab, the dot, the running badge. Green, amber and red mean status only: complete, pending or warning, error.</p>
+<div class="card"><div class="grid g3"><div class="sw"><div class="chip" style="background:#f3f4f6"></div><div><b>Ground</b> <code>--bg</code><br><code>#f3f4f6</code><br><span class="muted">Page, theme colour, manifest background</span></div></div><div class="sw"><div class="chip" style="background:#ffffff"></div><div><b>Card</b> <code>--bg-2</code><br><code>#ffffff</code><br><span class="muted">Cards, the output panel, the active-user card</span></div></div><div class="sw"><div class="chip" style="background:#e9ebf0"></div><div><b>Raised</b> <code>--bg-3</code><br><code>#e9ebf0</code><br><span class="muted">The output bar, pressed states</span></div></div><div class="sw"><div class="chip" style="background:#1a1d29"></div><div><b>Ink</b> <code>--ink</code><br><code>#1a1d29</code><br><span class="muted">Text, the wordmark, names</span></div></div><div class="sw"><div class="chip" style="background:#2d3142"></div><div><b>Ink 2</b> <code>--ink-2</code><br><code>#2d3142</code><br><span class="muted">Dispatch block text</span></div></div><div class="sw"><div class="chip" style="background:#565c6b"></div><div><b>Ink dim</b> <code>--ink-dim</code><br><code>#565c6b</code><br><span class="muted">Secondary text, status labels</span></div></div><div class="sw"><div class="chip" style="background:#676d7c"></div><div><b>Ink faint</b> <code>--ink-faint</code><br><code>#676d7c</code><br><span class="muted">Inactive tabs, mono labels</span></div></div><div class="sw"><div class="chip" style="background:#dfe2e8"></div><div><b>Line</b> <code>--line</code><br><code>#dfe2e8</code><br><span class="muted">Card borders, dividers</span></div></div><div class="sw"><div class="chip" style="background:#c9ced8"></div><div><b>Line 2</b> <code>--line-2</code><br><code>#c9ced8</code><br><span class="muted">Stronger borders</span></div></div><div class="sw"><div class="chip" style="background:#4338ca"></div><div><b>Indigo</b> <code>--accent</code><br><code>#4338ca</code><br><span class="muted">Primary button, active tab, the dot, running badge, manifest theme, icon ground</span></div></div><div class="sw"><div class="chip" style="background:#6366f1"></div><div><b>Indigo 2</b> <code>--accent-2</code><br><code>#6366f1</code><br><span class="muted">Defined in both themes; no stylesheet uses it yet</span></div></div><div class="sw"><div class="chip" style="background:#e0e7ff"></div><div><b>Indigo light</b> <code>--accent-light</code><br><code>#e0e7ff</code><br><span class="muted">Focus rings (3px), the copy pulse, info messages</span></div></div><div class="sw"><div class="chip" style="background:#059669"></div><div><b>OK</b> <code>--ok</code><br><code>#059669</code><br><span class="muted">Ready, complete</span></div></div><div class="sw"><div class="chip" style="background:#d97706"></div><div><b>Warn</b> <code>--warn</code><br><code>#d97706</code><br><span class="muted">Pending, check, the page's lower wash</span></div></div><div class="sw"><div class="chip" style="background:#dc2626"></div><div><b>Error</b> <code>--err</code><br><code>#dc2626</code><br><span class="muted">No match, errors</span></div></div></div></div>
+<div class="label">Dark theme (same token names)</div><div class="card"><div class="grid g3"><div class="sw sw-sm"><div class="chip" style="background:#0f1117"></div><div><b>Ground</b> <code>--bg</code><br><code>#0f1117</code></div></div><div class="sw sw-sm"><div class="chip" style="background:#171a23"></div><div><b>Card</b> <code>--bg-2</code><br><code>#171a23</code></div></div><div class="sw sw-sm"><div class="chip" style="background:#1e222e"></div><div><b>Raised</b> <code>--bg-3</code><br><code>#1e222e</code></div></div><div class="sw sw-sm"><div class="chip" style="background:#e8eaed"></div><div><b>Ink</b> <code>--ink</code><br><code>#e8eaed</code></div></div><div class="sw sw-sm"><div class="chip" style="background:#272b38"></div><div><b>Line</b> <code>--line</code><br><code>#272b38</code></div></div><div class="sw sw-sm"><div class="chip" style="background:#a5b4fc"></div><div><b>Accent</b> <code>--accent</code><br><code>#a5b4fc</code></div></div><div class="sw sw-sm"><div class="chip" style="background:#34d399"></div><div><b>OK</b> <code>--ok</code><br><code>#34d399</code></div></div><div class="sw sw-sm"><div class="chip" style="background:#fbbf24"></div><div><b>Warn</b> <code>--warn</code><br><code>#fbbf24</code></div></div><div class="sw sw-sm"><div class="chip" style="background:#f87171"></div><div><b>Error</b> <code>--err</code><br><code>#f87171</code></div></div></div><p class="small muted" style="margin:14px 0 0">Picked in Settings: light, dark or auto.</p></div>
+<div class="label">Icon only (not a token)</div><div class="card"><div class="grid g3"><div class="sw sw-sm"><div class="chip" style="background:#fdf8ef"></div><div><b>Icon cream</b> <code>icon-512.png</code><br><code>#fdf8ef</code></div></div></div></div>
+<p class="small muted">Every status pairs its colour with words (READY, NO MATCH) so the colour is never the only signal.</p>
+
+<h2 id="type">Type</h2>
+<p>Three faces from Google Fonts, each with one job. Big Shoulders Display (700, 800) for the wordmark, names and titles. Public Sans (400 to 700) for the interface at a 14px base. JetBrains Mono (400 to 700) for the dispatch blocks, status lines, counts and small labels, which are uppercase with +8% tracking.</p>
+<div class="card tt"><div class="row"><span class="mono">Wordmark · Display 700 · 22 · upper</span><span><span class="dbrand"><span class="dot"></span><span class="t">dispatch</span><span class="v">v3.1.1</span></span></span></div><div class="row"><span class="mono">Name · Display 700 · 18</span><span><span style="font-family:var(--disp);font-weight:700;font-size:18px">Not set</span></span></div><div class="row"><span class="mono">Empty output · Display 700 · 16 · faint</span><span><span style="font-family:var(--disp);font-weight:700;font-size:16px;color:#676d7c">Output appears here</span></span></div><div class="row"><span class="mono">Body · Public Sans 400 · 14</span><span><span>Paste a WPT/MPT vehicle list, pick a date and optional start time.</span></span></div><div class="row"><span class="mono">Tab label · Public Sans 600 · 12 · +2%</span><span><span style="font-size:12px;font-weight:600;letter-spacing:.02em;color:#676d7c">Deploy &nbsp; <span style="color:#4338ca">Tracker</span> &nbsp; Update</span></span></div><div class="row"><span class="mono">Label · Mono 600 · 12 · upper · +8%</span><span><span style="font-family:var(--mono);font-size:12px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:#676d7c">Active user · tap to switch</span></span></div><div class="row"><span class="mono">Block · Mono 400 · 12 · 1.6</span><span><span style="font-family:var(--mono);font-size:12px;line-height:1.6;color:#2d3142">DATE · TIME · MID · TO · VC · LOCATION · PURPOSE</span></span></div></div>
+
+
+<h2 id="motifs">Motifs</h2>
+<p>Three things the app already draws. Use them, not illustration.</p>
+<div class="grid g3"><div class="card"><h3>The status line</h3><div class="st"><span class="s"><i></i>awaiting input</span><span class="m">—</span></div><div class="st"><span class="s"><i style="background:#059669"></i>ready</span><span class="m">6 vehicles</span></div><div class="st"><span class="s"><i style="background:#d97706"></i>ready (check)</span><span class="m">9 vehicles</span></div><div class="st"><span class="s"><i style="background:#dc2626"></i>no match</span><span class="m">0 vehicles</span></div><p class="small muted" style="margin:12px 0 0">A 7px dot and a mono capital label on the output bar, with the count on the right. The words are the app's own.</p></div><div class="card"><h3>Tab badges</h3><div class="tabs"><span>Deploy</span><span class="on">Tracker<b style="background:#4338ca">2</b></span><span>Update<b style="background:#059669">1</b></span></div><p class="small muted" style="margin:12px 0 0">Small mono counts on the tab bar: indigo while a countdown runs, amber when pending, green when complete.</p></div><div class="card"><h3>The active-user card</h3><div class="au"><div><div class="l">Active user · tap to switch</div><div class="n">Not set</div></div><span style="color:#676d7c">›</span></div><p class="small muted" style="margin:12px 0 0">A white card with a 12px corner, a mono label and a condensed name. The chevron nudges right when pressed.</p></div></div>
+
+<h2 id="voice">Voice</h2>
+<p>From the README and the copy already in the app.</p>
+<div class="card"><div class="rule"><b>Imperative, plain</b><span>Say what to do: <i>Paste the list once.</i> <i>Tap to switch.</i></span></div><div class="rule"><b>Short status</b><span>Two or three lower-case words, set in capitals by the stylesheet: <i>awaiting input</i>, <i>ready</i>, <i>ready (check)</i>, <i>no match</i>.</span></div><div class="rule"><b>The terms</b><span>WPT, MPT, MID, VC: the vehicle list's own words, never explained away.</span></div><div class="rule"><b>Made-up data in public</b><span>Screenshots say so: <i>Shown with a made-up vehicle list.</i></span></div><div class="rule"><b>Nothing leaves the phone</b><span><i>Stays in the browser. No server, no account.</i> The only network call is the optional feedback button.</span></div></div>
+
+<h2 id="assets">Assets</h2>
+<p>Every file the brand lives in today. Nothing on this page is new artwork.</p>
+<div class="card"><table class="files"><tr><td><code>public/icon-512.png</code></td><td>App icon: manifest <i>any</i> and <i>maskable</i>; the README's header image</td></tr><tr><td><code>public/icon-192.png</code></td><td>Favicon, apple-touch-icon, manifest <i>any</i></td></tr><tr><td><code>public/manifest.json</code></td><td>Names (Dispatch Formatter / Dispatch), indigo theme colour, grey background</td></tr><tr><td><code>index.html (.brand)</code></td><td>The header wordmark: dot, word, version</td></tr><tr><td><code>src/styles/tokens.css</code></td><td>Fonts, easing and every colour token, both themes</td></tr><tr><td><code>docs/screenshots/</code></td><td>README images, made-up data</td></tr></table></div>
+<div class="label">Loose ends</div>
+<div class="card"><p class="small muted" style="margin:0 0 6px">Things this guide found and did not change.</p><ul class="loose"><li>The manifest's <code>theme_color</code> is indigo (<code>#4338ca</code>), while <code>index.html</code> sets theme-color to the grey ground (<code>#f3f4f6</code>), so the installed app's title bar and the browser's differ.</li><li>The maskable icon is the same file as the <i>any</i> icon. The d and the dot sit inside the mask's safe zone, so it works, but there is no padded maskable version.</li><li>There is no apple-touch-icon at 180px and no vector source; the icon exists only as 192 and 512 PNGs.</li><li>No <code>og:</code> tags, so a shared link unfurls without an image.</li></ul></div>
+
+<h2 id="code">Code</h2>
+<p>Copied from the repo as it is, so this page and the app can't drift.</p>
+<div class="label">src/styles/tokens.css · fonts and light tokens</div>
+<pre><code>:root {
+  /* Fonts */
+  --sans: 'Public Sans', -apple-system, 'Segoe UI', sans-serif;
+  --mono: 'JetBrains Mono', ui-monospace, monospace;
+  --display: 'Big Shoulders Display', 'Public Sans', sans-serif;
+
+  /* Easing curves */
+  --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+  --ease-out-strong: cubic-bezier(0.22, 0.61, 0.36, 1);
+  --ease-snappy: cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+:root,
+[data-theme='light'] {
+  --bg: #f3f4f6;
+  --bg-2: #ffffff;
+  --bg-3: #e9ebf0;
+  --ink: #1a1d29;
+  --ink-2: #2d3142;
+  --ink-dim: #565c6b;
+  --ink-faint: #676d7c;
+  --line: #dfe2e8;
+  --line-2: #c9ced8;
+  --accent: #4338ca;
+  --accent-2: #6366f1;
+  --accent-light: #e0e7ff;
+  --warn: #d97706;
+  --warn-bg: #fef3c7;
+  --err: #dc2626;
+  --err-bg: #fee2e2;
+  --ok: #059669;
+  --ok-bg: #d1fae5;
+  --overlay: rgba(26, 29, 41, 0.55);
+}</code></pre>
+<div class="label">src/styles/components.css · the wordmark</div>
+<pre><code>.brand {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+}
+
+.brand-title {
+  font-family: var(--display);
+  font-weight: 700;
+  font-size: 22px;
+  letter-spacing: 0.01em;
+  text-transform: uppercase;
+  color: var(--ink);
+}
+
+.brand-dot {
+  width: 6px;
+  height: 6px;
+  background: var(--accent);
+  border-radius: 50%;
+  margin-right: 2px;
+}</code></pre>
+<div class="label">index.html · head and header</div>
+<pre><code>&lt;title&gt;Dispatch&lt;/title&gt;
+&lt;meta name="theme-color" content="#f3f4f6"&gt;
+&lt;link rel="icon" type="image/png" href="/icon-192.png"&gt;
+&lt;link rel="apple-touch-icon" href="/icon-192.png"&gt;
+&lt;link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@700;800&amp;family=JetBrains+Mono:wght@400;500;600;700&amp;family=Public+Sans:wght@400;500;600;700&amp;display=swap" rel="stylesheet"&gt;
+&lt;div class="brand"&gt;
+&lt;span class="brand-dot" aria-hidden="true"&gt;&lt;/span&gt;
+&lt;h1 class="brand-title"&gt;dispatch&lt;/h1&gt;&lt;span class="brand-version" id="brandVersion"&gt;&lt;/span&gt;</code></pre>
+<footer>Dispatch design guide v1 · 25 Oct 2026 · tokens read from <code>src/styles/tokens.css</code> at v3.1.1.</footer>
+</div></body></html>
