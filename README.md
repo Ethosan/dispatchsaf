@@ -160,3 +160,7 @@ The service worker cache version (`dispatch-v12` in `public/sw.js`) should be bu
 ## License
 
 Private project.
+
+## Security
+
+Found a security problem? See [dispatchsaf.netlify.app/.well-known/security.txt](https://dispatchsaf.netlify.app/.well-known/security.txt), or email contact@ethantam.dev.
