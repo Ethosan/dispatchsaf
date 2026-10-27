@@ -29,6 +29,8 @@ Turn the WPT / MPT vehicle list into copy-paste dispatch blocks, time each WPT, 
 
 Settings: none. There are no secrets or environment variables; the only network call is the optional feedback button.
 
+> **About this source.** The TypeScript in `src/` was rebuilt on 23 Oct 2026 from the live site's minified build, while the GitHub account holding the original was suspended. The original JavaScript source (the Vite project from 16 Oct 2026) is kept on the tag [`archive/github-main-2026-10-17`](https://gitlab.com/eatentam/dispatchsaf/-/tree/archive/github-main-2026-10-17) for reference; `main` is the one to work on.
+
 ## Features
 
 - **Deploy** — Paste a WPT/MPT vehicle list, pick a date (today/tomorrow) and optional custom start time. Generates formatted dispatch blocks (`DATE`, `TIME`, `MID`, `TO`, `VC`, `LOCATION`, `PURPOSE`) ready to copy-paste. Each block is individually copyable.
