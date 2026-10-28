@@ -25,7 +25,7 @@ Turn the WPT / MPT vehicle list into copy-paste dispatch blocks, time each WPT, 
 | **Hosting** | Cloudflare Pages, connected to this repository; every push to `main` deploys (`npm run build`, output `dist/`) |
 | **Data** | Stays in the browser (`localStorage`). No server, no account. |
 | **Run locally** | `npm install && npm run dev`, then open http://localhost:5173 |
-| **Source** | [gitlab.com/eatentam/dispatchsaf](https://gitlab.com/eatentam/dispatchsaf) |
+| **Source** | [gitlab.com/eatentam/dispatchsaf](https://gitlab.com/eatentam/dispatchsaf). Read-only mirror: [github.com/Ethosan/dispatchsaf](https://github.com/Ethosan/dispatchsaf), which GitLab updates on every push |
 
 Settings: none. There are no secrets or environment variables; the only network call is the optional feedback button.
 
