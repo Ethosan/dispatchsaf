@@ -165,4 +165,4 @@ Private project.
 
 ## Security
 
-Found a security problem? See [dispatchsaf.netlify.app/.well-known/security.txt](https://dispatchsaf.netlify.app/.well-known/security.txt), or email contact@ethantam.dev.
+Found a security problem? See [dispatchsaf.ethantam.dev/.well-known/security.txt](https://dispatchsaf.ethantam.dev/.well-known/security.txt), or email contact@ethantam.dev.

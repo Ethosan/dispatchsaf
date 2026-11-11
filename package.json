@@ -1,6 +1,6 @@
 {
   "name": "dispatch",
-  "version": "3.1.5",
+  "version": "3.1.6",
   "description": "Turn the WPT / MPT vehicle list into copy-paste dispatch blocks, time each WPT, and tick off completed vehicles.",
   "type": "module",
   "private": true,
